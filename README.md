@@ -1,2 +1,5 @@
 # Note-Convex-Optimization
-Note: A series of my note on math or CS; this one is for Convex Optimization 凸优化
+
+Note系列是我的课程笔记，在上相关课程或学习相关知识时保留下来的，现在托管到线上。主要包括数学、计算机等学科门类。
+
+此处的科目是凸优化。
