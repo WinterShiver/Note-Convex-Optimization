@@ -1,0 +1,83 @@
+\documentclass[UTF8]{ctexart}
+
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{geometry}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+
+\usepackage{titlesec}
+% \titleformat{\paragraph}[block]{\normalsize\bfseries}{\theparagraph}{1em}{} % paragraph newline
+
+\newtheorem{thm}{定理}
+\newtheorem{prop}[thm]{命题}
+\newtheorem{lem}[thm]{引理}
+\newtheorem{cor}{推论}
+\renewcommand\proofname{证明}
+ \newtheorem{pf}{证明}
+
+
+\theoremstyle{Defination}
+\newtheorem{defn}{定义}
+\newtheorem{conj}{猜想}
+\newtheorem{exmp}{例}
+\theoremstyle{remark}
+\newtheorem{rem}{注}
+
+
+\title{\Large \textbf{优化方法作业}}
+\author{\textbf{计试61 张翀 2140506063}}
+\date{Week 2}
+\bibliographystyle{plain}
+
+\begin{document}
+\maketitle
+
+
+
+\section*{9.11 周二}
+
+\subsection*{作业1-1}
+
+\begin{lem}[上确界函数凸性质的转述]
+对于函数$f(x_1,\dots,x_m,x_{m+1},\dots,x_n)$，记$$dom f(x_1,x_2,\dots,x_m)=\{(x_{m+1},\dots,x_n)|(x_1,\dots,x_m,x_{m+1},\dots,x_n)\in dom f\}$$
+在$dom f$中固定$x_1,x_2,\dots,x_m$,并定义函数$g(x_{m+1},\dots,x_n)=f(x_1,\dots,x_m,x_{m+1},\dots,x_n)$.
+如果$\forall x_1,x_2,\dots,x_m$,$g(x_{m+1},\dots,x_n)$是凸函数，则
+$$h(x_{m+1},\dots,x_n)=\underset{x_1,\dots,x_m}{sup}{g(x_{m+1},\dots,x_n)}$$
+也是凸函数。
+\end{lem}
+
+\begin{rem}
+引理1转述了对讲义上关于上确界函数凸性质的定理，两者具有相同的本质。此处提出引理1以铺垫下面的证明。
+\end{rem}
+
+\begin{proof}
+将$x,\lambda,v$均视为成组的变量，此时只需要证明$$-L_D(\lambda,v)=\underset{x\in dom}{sup}{-f(x)-\lambda^Tg(x)-v^Th(x)}$$对$\lambda,v$是凸函数。考虑对称性，以下只给出$-L_D(x)$对$\lambda$是凸函数的证明；$-L_D(x)$对$v$是凸函数可以类似地证明。
+
+根据引理1,只需证明函数$-f(x)-\lambda^Tg(x)-v^Th(x)$对$\lambda$是凸函数。固定$x,v$,可知项$-f(x),-v^Th(x)$与$\lambda$的变化无关，而项$-\lambda^Tg(x)$中的$g(x)$是常向量。因此，项$-f(x),-v^Th(x)$是关于$\lambda$的常函数，而项$-\lambda^Tg(x)$是关于$\lambda$的仿射函数，它们都是关于$\lambda$的凸函数，所以其和也是关于$\lambda$的凸函数。结合引理1，可以证明$-L_D(\lambda,v)$对$\lambda$是凸函数。
+
+考虑对称性，对$-L_D(x)$对$v$是凸函数的证明是类似的。
+\end{proof}
+
+
+\subsection*{作业1-2}
+
+\begin{proof}
+记问题的可行解集为$X$.
+
+$\forall\lambda,v>0,x\in X,\lambda^Tg(x)\leq0,v^Th(x)=0$,所以
+\begin{align*}
+f^* & =f(x^*) \\
+ & \geq f(x^*)+\lambda^Tg(x^*)+v^Th(x^*) \\
+ & =L(x^*,\lambda,v) \\
+ & \geq\underset{x\in X}{inf}{L(x,\lambda,v)} \\
+ & =L_D(\lambda,v)
+\end{align*}
+\end{proof}
+
+
+% \section*{9.13 周四}
+
+% \subsection*{作业1}
+
+\end{document}

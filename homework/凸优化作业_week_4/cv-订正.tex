@@ -1,0 +1,302 @@
+\documentclass[UTF8]{ctexart}
+
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{geometry}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+
+\usepackage{titlesec}
+% \titleformat{\paragraph}[block]{\normalsize\bfseries}{\theparagraph}{1em}{} % paragraph newline
+\usepackage{hyperref} % equation ref
+\hypersetup{hidelinks} % avoid red blocks
+
+\newtheorem{thm}{定理}
+\newtheorem{prop}[thm]{命题}
+\newtheorem{lem}[thm]{引理}
+\newtheorem{cor}{推论}
+\renewcommand\proofname{证明}
+ \newtheorem{pf}{证明}
+
+
+\theoremstyle{Defination}
+\newtheorem{defn}{定义}
+\newtheorem{conj}{猜想}
+\newtheorem{exmp}{例}
+\theoremstyle{remark}
+\newtheorem{rem}{注}
+
+
+\title{\Large \textbf{优化方法作业}}
+\author{\textbf{计试61 张翀 2140506063}}
+\date{Week 4}
+\bibliographystyle{plain}
+
+\begin{document}
+\maketitle
+
+
+
+\section*{9.25 周二}
+
+\subsection*{作业1}
+
+\paragraph{证明非规范化最速下降方法对于精确直线搜索的收敛性}
+
+\begin{proof}
+
+因为$d_{k, sd}=||\bigtriangledown f(x_k)||_*d_{k, nsd}$,所以
+\begin{equation}
+\label{eq1}
+||d_{k, sd}||=||\bigtriangledown f(x_k)||
+\end{equation}
+
+另外一个常用的结论是
+\begin{equation}
+\label{negativesquare}
+\bigtriangledown f(x)^Td_{sd}=-||\bigtriangledown f(x)||_*^2
+\end{equation}
+
+此时, $\forall k\geq0$,
+\begin{equation}
+\begin{aligned}
+f(x_{k+1}) & =\underset{t\geq0}{min}\{f(x_k+td_{k,sd})\} \\
+ & \leq\underset{t\geq0}{min}\{f(x_k)+\bigtriangledown f(x_k)^Ttd_{k,sd}+\frac{M}{2}||td_{k,sd}||_2^2\} \\
+ & \quad(\bigtriangledown^2f(x_k)<MI) \\
+ & =f(x_k)+\underset{t\geq0}{min}\{-t*||\bigtriangledown f(x_k)||_*^2+t^2*\frac{M}{2\gamma^2}||\bigtriangledown f(x_k)||_*^2\} \\
+ & \quad(\autoref{negativesquare}, \autoref{eq1}, ||d_{sd}||_2^2\leq\frac{1}{\gamma^2}||d_{sd}||^2=\frac{1}{\gamma^2}||\bigtriangledown f(x_k)||_*^2) \\
+\end{aligned}
+\end{equation}
+
+因此
+\begin{equation}
+\begin{aligned}
+\label{exactstep}
+f(x_{k+1})-f(x_k) & \leq\underset{t\geq0}{min}\{-t*||\bigtriangledown f(x_k)||_*^2+t^2*\frac{M}{2\gamma^2}||\bigtriangledown f(x_k)||_*^2\} \\
+ & =-\frac{\gamma^2}{2M}||\bigtriangledown f(x_k)||_*^2 \\
+ & \leq -\frac{1}{2M}||\bigtriangledown f(x_k)||^2
+\end{aligned}
+\end{equation}
+
+考虑函数值和最优值的偏差, 
+\begin{equation}
+\begin{aligned}
+f(x_{k+1})-p^* & =f(x_{k+1})-f(x_k)+f(x_k)-p^* \\
+ & \leq f(x_k)-p^*-\frac{1}{2M}||\bigtriangledown f(x_k)||_2^2 \\
+ & \quad(\autoref{exactstep}) \\
+ & \leq f(x_k)-p^*-\frac{m}{M}(f(x_k)-p^*) \\
+ & \quad(f(x)-p^*\leq\frac{1}{2m}||\bigtriangledown f(x)||^2) \\
+ & =(1-\frac{m}{M})(f(x_k)-p^*)
+\end{aligned}
+\end{equation}
+
+通过累乘可知
+\begin{equation}
+\begin{aligned}
+f(x_{k})-p^* \leq(1-\frac{m}{M})^k(f(x_0)-p^*)
+\end{aligned}
+\end{equation}
+
+固定$x_0,0<m\leq M$, 
+有$$\underset{k\to\infty}{lim}f(x_{k})-p^*\leq(f(x_0)-p^*)\underset{k\to\infty}{lim}(1-\frac{m}{M})^k=0$$
+
+注意到$\forall k\geq0, f(x_{k})-p^*\geq0$, 可知$\underset{k\to\infty}{lim}f(x_{k})-p^*=0$. 
+因此, 在非规范化最速下降中应用精确直线搜索, 最终能收敛到最优解. 
+
+\end{proof}
+
+\paragraph{证明非规范化最速下降方法对于回溯直线搜索的收敛性}
+
+\begin{proof}
+
+$\forall k\geq0, 0\leq t_k\leq\frac{\gamma^2}{M}$, 
+\begin{equation}
+\begin{aligned}
+f(x_{k+1}) & \leq f(x_k)+\bigtriangledown f(x_k)^Tt_kd_{k,sd}+\frac{M}{2}||t_kd_{k,sd}||_2^2 \\
+ & \quad(\bigtriangledown^2f(x_k)<MI) \\
+ & \leq f(x_k)-t_k||\bigtriangledown f(x_k)||_*^2+\frac{Mt_k^2}{2\gamma^2}||d_{k,sd}||_*^2 \\
+ & \quad(\autoref{negativesquare}, ||x||_*\geq\gamma||x||_2) \\
+ & =f(x_k)+(\frac{Mt_k}{2\gamma^2}-1)t_k||\bigtriangledown f(x_k)||_*^2 \\
+ & \leq f(x_k)-\frac{1}{2}t_k||\bigtriangledown f(x_k)||_*^2\qquad(0\leq t_k\leq\frac{\gamma^2}{M}) \\
+ & \leq f(x_k)-\alpha t_k||\bigtriangledown f(x_k)||_*^2\qquad(0<\alpha<0.5) \\
+ & =f(x_k)+\alpha f(x_k)^Tt_kd_{k,sd} \\
+ & \quad(\autoref{negativesquare})
+\end{aligned}
+\end{equation}
+
+所以, $\forall0\leq t_k\leq\frac{\gamma^2}{M}$, 回溯停止条件成立. 因此, 回溯停止时的步长$t\geq min\{1,\frac{\beta\gamma^2}{M}\}$, 即
+\begin{equation}
+\label{rangeoftk}
+\forall k\geq0, t_k\geq min\{1,\frac{\beta\gamma^2}{M}\}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+f(x_{k+1}) & \leq f(x_k)+\alpha*t_k*\bigtriangledown f(x_k)^Td_{k, sd} \\
+ & \leq f(x_k)+\alpha*min\{1,\frac{\beta\gamma^2}{M}\}*(-||\bigtriangledown f(x_k)||_*^2) \\
+ & \quad(\autoref{rangeoftk}, \autoref{negativesquare}) \\
+ & \leq f(x_k)-\alpha\gamma^2min\{1,\frac{\beta\gamma^2}{M}\}||\bigtriangledown f(x_k)||_2^2 \\
+\end{aligned}
+\end{equation}
+
+因此
+\begin{equation}
+\label{inexactstep}
+f(x_k)-f(x_{k+1})\geq\alpha\gamma^2min\{1,\frac{\beta\gamma^2}{M}\}||\bigtriangledown f(x_k)||_2^2
+\end{equation}
+
+
+\autoref{inexactstep}和\autoref{exactstep}在形式上是类似的. 因此, 可以导出类似的结果: 
+\begin{equation}
+\begin{aligned}
+f(x_{k+1})-p^*\leq(1-2m\alpha\gamma^2min\{1,\frac{\beta\gamma^2}{M}\})(f(x_k)-p^*)
+\end{aligned}
+\end{equation}
+
+记$c=2m\alpha\gamma^2min\{1,\frac{\beta\gamma^2}{M}\}$.
+
+\textit{(这里$c$的记号好像有一点小错误，不过不影响结果)}
+
+此时, 亦有
+\begin{equation}
+\begin{aligned}
+f(x_{k})-p^* \leq(1-c)^k(f(x_0)-p^*)
+\end{aligned}
+\end{equation}
+
+因为$0<1-c<1$, 故亦有$\underset{k\to\infty}{lim}f(x_{k})-p^*\leq(f(x_0)-p^*)\underset{k\to\infty}{lim}(1-c)^k=0$, $\underset{k\to\infty}{lim}f(x_{k})-p^*=0$. 
+因此, 在非规范化最速下降中应用回溯直线搜索, 最终能收敛到最优解. 
+
+\end{proof}
+
+
+\section*{9.29 周六}
+
+\subsection*{作业1}
+
+\paragraph{证明牛顿下降方法对于回溯直线搜索的收敛性}
+
+\begin{proof}
+
+固定$\alpha, \beta$, 并取$\eta=min\{1, 3(1-2\alpha)\}\frac{m^2}{L}$, $0<\eta\leq\frac{m^2}{L}$.
+
+$\forall k\geq0, 0\leq t_k\leq\frac{m}{M}$, 
+\begin{equation}
+\label{newtonsteprange}
+\begin{aligned}
+f(x_{k+1}) & \leq f(x_k)+\bigtriangledown f(x_k)^Tt_kd_{k,nt}+\frac{M}{2}||t_kd_{k,nt}||_2^2 \\
+ & \quad(\bigtriangledown^2f(x_k)<MI) \\
+ & = f(x_k)-t_k\lambda_k^2+\frac{Mt_k^2}{2m}*d_{k,nt}^TmId_{k,nt} \\
+ & \quad(\bigtriangledown f(x_k)^Tt_kd_{k,nt}=-\lambda_k^2) \\
+ & \leq f(x_k)-t_k\lambda_k^2+\frac{Mt_k^2}{2m}*d_{k,nt}^T\bigtriangledown^2f(x_k)d_{k,nt} \\
+ & \quad(\bigtriangledown^2f(x_k)>mI) \\
+ & =f(x_k)+\lambda_k^2(-t_k+\frac{Mt_k^2}{2m})\qquad(\bigtriangledown f(x_k)^Tt_kd_{k,nt}=-\lambda_k^2) \\
+ & \leq f(x_k)-\frac{1}{2}t_k\lambda_k^2\qquad(0\leq t_k\leq\frac{m}{M}) \\
+ & =f(x_k)-\alpha t_k\lambda_k^2\qquad(0<\alpha<0.5) \\
+\end{aligned}
+\end{equation}
+
+所以, $\forall0\leq t_k\leq\frac{m}{M}\leq1$, 回溯停止条件成立, 即
+\begin{equation}
+\label{newtonrangeoftk}
+\forall k\geq0, t_k\geq\frac{\beta m}{M}
+\end{equation}
+
+% 和之前非规范化下降的证明相似, 此处也估计了满足回溯停止条件的范围. 不同的是, 此处估计的范围上界不超过1, 但这并不代表每一步下降时实际取得的步长小于1. 在进行二次收敛阶段的估计时, 我们将进一步明确该阶段内步长的实际取值. 
+
+在阻尼牛顿阶段中, 有$||\bigtriangledown f(x_k)||_2\geq\eta$. 此时有
+\begin{equation}
+\label{newtoniter}
+\begin{aligned}
+f(x_{k+1})-f(x_k) & \leq-\alpha t_k\lambda_k^2 \\
+ & \leq-\alpha\frac{\beta m}{M}\bigtriangledown f(x_k)^T\bigtriangledown^2f(x_k)^{-1}\bigtriangledown f(x_k) \\
+ & \quad(\autoref{newtonrangeoftk}, \lambda_k^2=\bigtriangledown f(x_k)^T\bigtriangledown^2f(x_k)^{-1}\bigtriangledown f(x_k)) \\
+ & \leq -\alpha\frac{\beta m}{M}\bigtriangledown f(x_k)^T\frac{I}{M}\bigtriangledown f(x_k)\qquad(\bigtriangledown^2f(x_k)\leq MI) \\
+ & =-\alpha\frac{\beta m}{M^2}||\bigtriangledown f(x_k)||_2^2 \\
+ & \leq-\alpha\frac{\beta m}{M^2}\eta^2\qquad(||\bigtriangledown f(x_k)||_2\geq\eta)
+\end{aligned}
+\end{equation}
+
+记$\gamma=\alpha\frac{\beta m}{M^2}\eta^2>0$, 有$f(x_k)-f(x_{k+1})\geq\gamma$, 即阻尼牛顿阶段每一步下降的量不小于一个正数.
+
+在二次收敛阶段中, 我们进一步明确该阶段内步长的实际取值, 同时也将解释$\eta$的取法. 此时$||\bigtriangledown f(x_k)||_2<\eta$. 
+固定$x_k$, $d_{k,nt}$, 记$\tilde{f}(t)=f(x_k+td_{k,nt})$, $t\geq0$, 则$\tilde{f}'(t)=\bigtriangledown^Tf(x_k+td_{k,nt})d_{k,nt}$, $\tilde{f}''(t)=d_{k,nt}^T\bigtriangledown^2f(x_k+td_{k,nt})d_{k,nt}$. 以下, \autoref{newtonsteprange_dt2}对$\tilde{f}''(t)$进行估计.
+\begin{equation}
+\label{newtonsteprange_dt2}
+\begin{aligned}
+||\bigtriangledown^2f(x_k+td_{k,nt})-\bigtriangledown^2f(x_k)||_2 & \leq L||td_{k,nt}||_2 \\
+|d_{k,nt}^T(\bigtriangledown^2f(x_k+td_{k,nt})-\bigtriangledown^2f(x_k))d_{k,nt}| & \leq L||d_{k,nt}^T||_2||td_{k,nt}||_2||d_{k,nt}||_2 \\
+|\tilde{f}''(t)-f''(t)| & \leq Lt||d_{k,nt}||_2^3 \\
+\tilde{f}''(t) & \leq f''(t)+Lt||d_{k,nt}||_2^3 \\
+\tilde{f}''(t) & \leq \lambda_k^2+Lt\lambda_k^3m^{-3/2}\qquad(\autoref{|dnkt|})
+\end{aligned}
+\end{equation}
+
+其中
+\begin{equation}
+\label{|dnkt|}
+\begin{aligned}
+d_{k,nt}^T\bigtriangledown^2f(x_k)d_{k,nt} & =\lambda_k^2 \\
+d_{k,nt}^TmId_{k,nt} & \leq\lambda_k^2 \\
+m||d_{k,nt}||_2^2 & \leq\lambda_k^2 \\
+||d_{k,nt}||_2 & \leq\lambda_km^{-1/2}
+\end{aligned}
+\end{equation}
+
+对\autoref{newtonsteprange_dt2}两侧积分两次
+\begin{equation}
+\label{newtonsteprange_dt}
+\begin{aligned}
+\tilde{f}''(t) & \leq \lambda_k^2+Lt\lambda_k^3m^{-3/2} \\
+\int_0^t{\tilde{f}''(t)dt} & \leq \int_0^t{(\lambda_k^2+Lt\lambda_k^3m^{-3/2})dt} \\
+\tilde{f}'(t)-\tilde{f}'(0) & \leq t\lambda_k^2+\frac{Lt^2\lambda_k^3}{2m^{3/2}} \\
+\tilde{f}'(t) & \leq -\lambda_k^2+t\lambda_k^2+\frac{Lt^2\lambda_k^3}{2m^{3/2}} \\
+\int_0^t{\tilde{f}'(t)} & \leq \int_0^t{(-\lambda_k^2+t\lambda_k^2+\frac{Lt^2\lambda_k^3}{2m^{3/2}})dt} \\
+\tilde{f}(t)-\tilde{f}(0) & \leq -t\lambda_k^2+\frac{t^2}{2}\lambda_k^2+\frac{Lt^3\lambda_k^3}{6m^{3/2}} \\
+\tilde{f}(t) & \leq f(x_k)-t\lambda_k^2+\frac{t^2}{2}\lambda_k^2+\frac{Lt^3\lambda_k^3}{6m^{3/2}}
+\end{aligned}
+\end{equation}
+
+特殊地, 在\autoref{newtonsteprange_dt}中取$t=1$, 有
+\begin{equation}
+\label{newtonsteprange1}
+\begin{aligned}
+f(x_k+d_{k,nt}) & \leq f(x_k)+\lambda_k^2(-\frac{1}{2}+\frac{L\lambda_k}{6m^{3/2}}) \\
+f(x_k+d_{k,nt}) & \leq f(x_k)-\alpha\lambda_k^2\qquad(\autoref{lambdak2})
+\end{aligned}
+\end{equation}
+
+其中
+\begin{equation}
+\label{lambdak2}
+\begin{aligned}
+\lambda_k^2  & =\bigtriangledown f(x_k)^T\bigtriangledown^2f(x_k)^{-1}\bigtriangledown f(x_k) \\
+ & \leq\bigtriangledown f(x_k)^T\frac{I}{m}\bigtriangledown f(x_k) \\
+ & =\frac{1}{m}||\bigtriangledown f(x_k)||_2^2 \\
+ & \leq\frac{\eta^2}{m}\leq 3(1-2\alpha)\frac{m^{3/2}}{L} \\
+that\ makes & -\frac{1}{2}+\frac{L\lambda_k}{6m^{3/2}}\leq-\alpha
+\end{aligned}
+\end{equation}
+
+\autoref{lambdak2}说明, 在二次收敛阶段，回溯直线搜索的步长取1时即满足停止条件, 所以每一步的步长必定为1. 此时
+\begin{equation}
+\label{newtoniter2}
+\begin{aligned}
+\bigtriangledown f(x_{k+1}) & =\bigtriangledown f(x_k+d_{k,nt})-\bigtriangledown f(x_k)-\bigtriangledown^2f(x_k)d_{k,nt} \\
+ & =\int_0^1{(\bigtriangledown^2f(x_k+td_{k,nt})d_{k,nt})dt}-\int_0^1{(\bigtriangledown^2f(x_k)d_{k,nt})dt} \\
+ & =\int_0^1{(\bigtriangledown^2(f(x_k+td_{k,nt})-\bigtriangledown^2f(x_k))d_{k,nt})dt} \\
+ & \leq\int_0^1{(L||td_{k,nt}||_2d_{k,nt})dt} \\
+ & =L||d_{k,nt}||_2d_{k,nt}\int_0^1{tdt} \\
+ & =\frac{L}{2}||d_{k,nt}||_2d_{k,nt} \\
+||\bigtriangledown f(x_{k+1})||_2 & \leq\frac{L}{2}||d_{k,nt}||_2^2 \\
+ & \leq\frac{L}{2m^2}||\bigtriangledown f(x_k)||_2^2\qquad(Similar\ to\ \autoref{|dnkt|})
+\end{aligned}
+\end{equation}
+
+\autoref{newtoniter2}说明了牛顿下降过程的二次收敛性. 
+
+根据\autoref{newtoniter2}和\autoref{newtoniter}, $\forall\epsilon>0$, 在不超过$k=k_1+k_2=\frac{f(x_0)-p^*}{\gamma}+log_2(log_2(\frac{2m^2}{L\epsilon}))$的步数后, $||\bigtriangledown f(x_k)||<\epsilon$. 因此, 在牛顿下降中应用回溯直线搜索, 最终能收敛到最优解. 
+
+\end{proof}
+
+\end{document}
